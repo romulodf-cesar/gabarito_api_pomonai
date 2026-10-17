@@ -7,9 +7,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 @RestController 
 @RequestMapping("/duvida")
@@ -21,12 +22,13 @@ public class DuvidaController {
     
     @GetMapping
     public List<Duvida> listar() {
-        return repository.findAll();
+        return repository.findAllByOrderByDataHoraDesc();
     } 
     @PostMapping
     @Transactional
-    public void cadastrar(@RequestBody DadosCadastroDuvida dados){
+    public ResponseEntity<Void> cadastrar(@RequestBody DadosCadastroDuvida dados){
         repository.save(new Duvida(dados));
+        return ResponseEntity.status(HttpStatus.CREATED).build(); //201
     }
 }
 
