@@ -19,6 +19,9 @@ public class Duvida {
     @Column(columnDefinition = "TEXT")
     private String texto; 
 
+    @Column(columnDefinition = "TEXT")
+    private String resposta; 
+
     @Column(name= "datahora", nullable = false)
     private LocalDateTime dataHora;
 
@@ -51,6 +54,14 @@ public class Duvida {
     public void setTipoPausa(String tipoPausa){
         this.tipoPausa = tipoPausa;
     }
+    public String getResposta() {
+        return resposta;
+    }
+    public void setResposta(String resposta) {
+        this.resposta = resposta;
+    }
+
+    
     
 }
 

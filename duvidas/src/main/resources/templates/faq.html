@@ -1,34 +1,110 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>FAQ Java FullStack</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #0a0d4c; color: #fff; padding: 24px; }
-        h1 { text-align: center; }
-        .faq { max-width: 720px; margin: 0 auto; }
-        details { background: #141a6b; border: 2px solid #4da3ff; border-radius: 12px;
-            margin-bottom: 12px; padding: 14px 18px; }
-        summary { cursor: pointer; font-weight: bold; }
-        .info { margin: 10px 0 0; color: #9fc4ff; font-size: 14px; }
-        .resp { margin: 8px 0 0; color: #cfe6ff; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0d4c;
+            color: #fff;
+            padding: 24px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .faq {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        details {
+            background: #141a6b;
+            border: 2px solid #4da3ff;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            padding: 14px 18px;
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .info {
+            margin: 10px 0 0;
+            color: #9fc4ff;
+            font-size: 14px;
+        }
+
+        .resp {
+            margin: 8px 0 0;
+            color: #cfe6ff;
+        }
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            margin-top: 8px;
+            border-radius: 8px;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .form-resposta {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .form-resposta.aberto {
+            display: block;
+        }
     </style>
 </head>
+
 <body>
     <h1>FAQ Java FullStack</h1>
 
     <div class="faq">
         <details th:each="d : ${duvidas}">
+            <!-- Aqui é a dúvida-->
             <summary th:text="${d.texto}">Texto da dúvida</summary>
             <p class="info">
-                Enviada em 
+                Enviada em
                 <span th:text="${#temporals.format(d.dataHora, 'dd/MM/yyyy HH:mm')}">17/10/2026 09:00</span>
                 • Pausa: <span th:text="${d.tipoPausa}">CURTA</span>
             </p>
-            <p class="resp">Resposta em breve: o professor responde na aula.</p>
+             <!-- Aqui é o responder-->
+             
+            <p class="resp" th:if="${d.resposta != null and !d.resposta.isBlank()}" th:text="${d.resposta}">
+                Resposta do professor
+            </p>
+            <p class="resp" th:if="${d.resposta == null or d.resposta.isBlank()}">
+                Resposta em breve: o professor responde na aula.
+            </p>
+
+            <button type="button" onclick="this.nextElementSibling.classList.toggle('aberto')">
+                ✏️ Responder
+            </button>
+
+            <form th:action="@{/faq/responder}" method="post" class="form-resposta">
+                <input type="hidden" name="id" th:value="${d.id}">
+                <textarea name="resposta" placeholder="Professor digite a resposta..."
+                        th:text="${d.resposta}"></textarea>
+                <button type="submit">💾 Salvar resposta</button>
+            </form>
+            
+             <!--Aqui é o excluir-->
+            <form th:action="@{/faq/excluir}" method="post">
+                <input type="hidden" name="id" th:value="${d.id}">
+                <button type="submit" class="btn btn-danger btn-sm">🗑 Excluir</button>
+            </form>
         </details>
         <p th:if="${#lists.isEmpty(duvidas)}">Nenhuma dúvida cadastrada ainda.</p>
     </div>
 </body>
+
 </html>
